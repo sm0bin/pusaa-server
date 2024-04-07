@@ -1,10 +1,13 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const db = require('./src/config/db');
 const userRoutes = require('./src/routes/userRoutes');
+const cookieParser = require('cookie-parser');
 
 // Middleware
-app.use(express.json())
+app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: [
         "http://localhost:5173",
