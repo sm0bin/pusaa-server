@@ -2,7 +2,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-exports.createUser = async (req, res) => {
+exports.signupUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         const existingUser = await User.findOne({ email });
@@ -137,4 +137,3 @@ exports.createUserJWT = async (req, res) => {
     }
 };
 
-// Implement update and delete methods similarly
