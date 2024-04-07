@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const verifyToken = require('../middlewares/verifyToken');
 
-router.post('/auth/signup', userController.createUser);
+router.post('/auth/signup', userController.signupUser);
 router.post('/auth/login', userController.loginUser);
 router.get('/:email', verifyToken, userController.getUserByEmail);
 router.post('/create-jwt', userController.createUserJWT);
