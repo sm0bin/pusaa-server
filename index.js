@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const db = require('./src/config/db');
-const userRoutes = require('./src/routes/userRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 const cookieParser = require('cookie-parser');
 
 // Middleware
@@ -16,7 +16,8 @@ app.use(cors({
 }));
 
 // Routes
-app.use('/users', userRoutes);
+// app.use('/users', userRoutes);
+app.use('/auth', authRoutes);
 app.use('/', (req, res) => {
     res.send("PUSAA Server is running...");
 })
