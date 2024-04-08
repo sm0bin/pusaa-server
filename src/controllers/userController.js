@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+var nodemailer = require('nodemailer');
 
 exports.signupUser = async (req, res) => {
     try {
@@ -32,6 +33,58 @@ exports.loginUser = async (req, res) => {
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
         res.cookie('token', token, { httpOnly: true });
         res.status(200).json({ status: 'success', message: 'Login Successful' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'youremail@gmail.com',
+                pass: 'yourpassword'
+            }
+        });
+
+        var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: 'myfriend@yahoo.com',
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+        res.status(200).json({ status: 'success', message: 'Email sent successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const id = decoded.id;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.findByIdAndUpdate({ _id: id }, { password: hashedPassword });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ status: 'success', message: 'Password reset successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
