@@ -13,7 +13,7 @@ exports.signupUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ email, password: hashedPassword });
         await newUser.save();
-        res.status(201).json({ status: 'success', message: 'User created successfully' });
+        res.status(201).json({ status: true, message: 'User created successfully' });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -32,7 +32,7 @@ exports.loginUser = async (req, res) => {
         };
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
         res.cookie('token', token, { httpOnly: true });
-        res.status(200).json({ status: 'success', message: 'Login Successful' });
+        res.status(200).json({ status: true, message: 'Login Successful' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -68,7 +68,7 @@ exports.forgotPassword = async (req, res) => {
                 console.log('Email sent: ' + info.response);
             }
         });
-        res.status(200).json({ status: 'success', message: 'Email sent successfully' });
+        res.status(200).json({ status: true, message: 'Email sent successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -85,7 +85,20 @@ exports.resetPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json({ status: 'success', message: 'Password reset successfully' });
+        res.status(200).json({ status: true, message: 'Password reset successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.verifyUser = async (req, res) => {
+    return res.status(200).json({ status: true, message: 'User verified' });
+}
+
+exports.logoutUser = async (req, res) => {
+    try {
+        res.clearCookie('token');
+        res.status(200).json({ status: true, message: 'Logout Successful' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
