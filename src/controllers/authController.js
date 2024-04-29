@@ -141,5 +141,44 @@ exports.getProfile = async (req, res) => {
     }
 }
 
+exports.updateProfile = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        console.log('Token:', token);
+
+        if (token) {
+            // Verify and decode the token
+            jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+                if (err) {
+                    console.error('Error decoding token:', err.message);
+                    res.status(401).send('Invalid token');
+                } else {
+                    // Token decoded successfully
+                    console.log('Decoded token:', decoded);
+
+                    try {
+                        // Retrieve the user from the database using the decoded token
+                        const user = await User.findById(decoded._id);
+                        console.log('User:', user);
+
+                        // Update the user's profile
+                        user.profile = req.body;
+                        await user.save();
+
+                        res.status(200).json({ status: true, message: 'Profile updated successfully' });
+                    } catch (error) {
+                        console.error('Error updating user profile:', error.message);
+                        res.status(500).json({ message: 'Error updating user profile' });
+                    }
+                }
+            }
+            );
+        }
+    }
+    catch (error) {
+        console.error('Error in profile endpoint:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 

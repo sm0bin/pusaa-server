@@ -13,25 +13,33 @@ const userSchema = new Schema({
     },
     profile: {
         type: {
-            name: {
-                type: String,
-                required: false
+            basic: {
+                name: {
+                    type: String,
+                    required: false
+                },
+                picture: {
+                    type: String,
+                    default: ""
+                },
+                rol: {
+                    type: String,
+                    default: "user"
+                },
             },
-            picture: {
-                type: String,
-                default: ""
-            },
-            university: {
-                type: String,
-                default: ""
-            },
-            dept: {
-                type: String,
-                default: ""
-            },
-            session: {
-                type: String,
-                default: ""
+            education: {
+                university: {
+                    type: String,
+                    default: ""
+                },
+                dept: {
+                    type: String,
+                    default: ""
+                },
+                session: {
+                    type: String,
+                    default: ""
+                },
             },
             contact: {
                 phone: {
@@ -52,7 +60,7 @@ const userSchema = new Schema({
                 }
             },
             social: {
-                fb: {
+                facebook: {
                     type: String,
                     default: ""
                 },
