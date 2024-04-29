@@ -30,7 +30,7 @@ exports.loginUser = async (req, res) => {
         if (!validPassword) {
             return res.status(400).json({ message: 'Invalid password' });
         };
-        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+        const token = jwt.sign({ _id: user._id, email: user.email }, process.env.JWT_SECRET);
         res.cookie('token', token, { httpOnly: true });
         res.status(200).json({ status: true, message: 'Login Successful' });
     } catch (error) {
@@ -103,3 +103,43 @@ exports.logoutUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getProfile = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        console.log('Token:', token);
+
+        if (token) {
+            // Verify and decode the token
+            jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+                if (err) {
+                    console.error('Error decoding token:', err.message);
+                    res.status(401).send('Invalid token');
+                } else {
+                    // Token decoded successfully
+                    console.log('Decoded token:', decoded);
+
+                    try {
+                        // Retrieve the user from the database using the decoded token
+                        const user = await User.findById(decoded._id);
+                        console.log('User:', user);
+
+                        res.status(200).json({ status: true, user });
+                    } catch (error) {
+                        console.error('Error retrieving user from database:', error.message);
+                        res.status(500).json({ message: 'Error retrieving user from database' });
+                    }
+                }
+            });
+        } else {
+            console.log('No token found.');
+            res.status(401).send('Token not found');
+        }
+    } catch (error) {
+        console.error('Error in profile endpoint:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+
+
