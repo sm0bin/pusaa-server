@@ -22,7 +22,7 @@ const userSchema = new Schema({
                     type: String,
                     default: ""
                 },
-                rol: {
+                role: {
                     type: String,
                     default: "user"
                 },
@@ -32,7 +32,7 @@ const userSchema = new Schema({
                     type: String,
                     default: ""
                 },
-                dept: {
+                department: {
                     type: String,
                     default: ""
                 },
