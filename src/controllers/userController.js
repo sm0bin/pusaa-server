@@ -1,13 +1,17 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 exports.getAllUsers = async (req, res) => {
     try {
         const searchQuery = req.query.search;
         const regex = new RegExp(searchQuery, 'i');
 
-        const query = {
-            $or: [
+        let query = {
+            'profile': { $ne: null }
+        };
+
+        if (searchQuery) {
+            query.$or = [
                 { email: regex },
                 { 'profile.basic.name': regex },
                 { 'profile.basic.role': regex },
@@ -15,8 +19,8 @@ exports.getAllUsers = async (req, res) => {
                 { 'profile.education.department': regex },
                 { 'profile.education.session': regex },
                 { 'profile.contact.address': regex },
-            ]
-        };
+            ];
+        }
 
         const options = {
             sort: {
@@ -24,13 +28,7 @@ exports.getAllUsers = async (req, res) => {
             }
         };
 
-        let users;
-        if (searchQuery) {
-            users = await User.find(query, {}, options);
-        } else {
-            users = await User.find({}, {}, options);
-        }
-
+        const users = await User.find(query, {}, options);
         res.status(200).json({ status: true, users });
     } catch (error) {
         res.status(500).json({ message: error.message });

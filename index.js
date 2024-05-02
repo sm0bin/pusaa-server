@@ -4,6 +4,8 @@ const cors = require('cors');
 const db = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const eventRoutes = require('./src/routes/eventRoutes');
+const testimonialRoutes = require('./src/routes/testimonialRoutes');
 const cookieParser = require('cookie-parser');
 
 // Middleware
@@ -19,6 +21,8 @@ app.use(cors({
 // Routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/events', eventRoutes);
+app.use('/testimonials', testimonialRoutes);
 app.use('/', (req, res) => {
     res.send("PUSAA Server is running...");
 })
