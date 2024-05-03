@@ -121,7 +121,7 @@ exports.getProfile = async (req, res) => {
 
                     try {
                         // Retrieve the user from the database using the decoded token
-                        const user = await User.findById(decoded._id);
+                        const user = await User.findById(decoded._id).select('-password');
                         console.log('User:', user);
 
                         res.status(200).json({ status: true, user });
