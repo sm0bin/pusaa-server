@@ -17,6 +17,43 @@ exports.jwt = async (req, res) => {
     }
 };
 
+exports.getProfile = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        console.log('Token:', token);
+
+        if (token) {
+            // Verify and decode the token
+            jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+                if (err) {
+                    console.error('Error decoding token:', err.message);
+                    res.status(401).send('Invalid token');
+                } else {
+                    // Token decoded successfully
+                    console.log('Decoded token:', decoded);
+
+                    try {
+                        // Retrieve the user from the database using the decoded token
+                        const user = await User.findOne({ email: decoded.email });
+                        console.log('User:', user);
+
+                        res.status(200).json({ status: true, user });
+                    } catch (error) {
+                        console.error('Error retrieving user from database:', error.message);
+                        res.status(500).json({ message: 'Error retrieving user from database' });
+                    }
+                }
+            });
+        } else {
+            console.log('No token found.');
+            res.status(401).send('Token not found');
+        }
+    } catch (error) {
+        console.error('Error in profile endpoint:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 exports.createProfile = async (req, res) => {
     try {
         const token = req.cookies.token;
@@ -74,7 +111,7 @@ exports.updateProfile = async (req, res) => {
 
                     try {
                         // Retrieve the user from the database using the decoded token
-                        const user = await User.findById(decoded._id);
+                        const user = await User.findOne({ email: decoded.email });
                         console.log('User:', user);
 
                         // Update the user's profile
@@ -196,43 +233,6 @@ exports.updateProfile = async (req, res) => {
 //         res.status(500).json({ message: error.message });
 //     }
 // };
-
-// exports.getProfile = async (req, res) => {
-//     try {
-//         const token = req.cookies.token;
-//         console.log('Token:', token);
-
-//         if (token) {
-//             // Verify and decode the token
-//             jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-//                 if (err) {
-//                     console.error('Error decoding token:', err.message);
-//                     res.status(401).send('Invalid token');
-//                 } else {
-//                     // Token decoded successfully
-//                     console.log('Decoded token:', decoded);
-
-//                     try {
-//                         // Retrieve the user from the database using the decoded token
-//                         const user = await User.findById(decoded._id).select('-password');
-//                         console.log('User:', user);
-
-//                         res.status(200).json({ status: true, user });
-//                     } catch (error) {
-//                         console.error('Error retrieving user from database:', error.message);
-//                         res.status(500).json({ message: 'Error retrieving user from database' });
-//                     }
-//                 }
-//             });
-//         } else {
-//             console.log('No token found.');
-//             res.status(401).send('Token not found');
-//         }
-//     } catch (error) {
-//         console.error('Error in profile endpoint:', error.message);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// }
 
 
 
