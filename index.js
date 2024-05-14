@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const db = require('./src/config/db');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const eventRoutes = require('./src/routes/eventRoutes');
 const testimonialRoutes = require('./src/routes/testimonialRoutes');
-const cookieParser = require('cookie-parser');
 
 // Middleware
 app.use(express.json());
@@ -14,6 +14,8 @@ app.use(cookieParser());
 app.use(cors({
     origin: [
         "http://localhost:5173",
+        "https://pusaa.surge.sh",
+        "pusaa.surge.sh",
     ],
     credentials: true
 }));
