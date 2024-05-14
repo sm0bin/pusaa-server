@@ -43,13 +43,11 @@ exports.getAllUsers = async (req, res) => {
                 console.log('Decoded token:', decoded);
 
                 // Retrieve the user from the database using the decoded token
-                const user = await User.findById(decoded._id).select('-password');
+                const user = await User.findOne({ email: decoded.email });
                 console.log('User:', user);
 
                 if (roles.includes(user.profile.basic.role)) {
-                    select = {
-                        password: 0
-                    };
+                    select = {};
                 }
             } catch (error) {
                 console.error('Error decoding or retrieving user:', error.message);
