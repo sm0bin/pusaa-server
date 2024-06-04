@@ -14,8 +14,10 @@ app.use(cookieParser());
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://pusaa.surge.sh",
-        "pusaa.surge.sh",
+        "https://pusaa-sm.web.app",
+        "https://pusaa-sm.firebaseapp.com",
+        // "https://pusaa.surge.sh",
+        // "pusaa.surge.sh",
     ],
     credentials: true
 }));
