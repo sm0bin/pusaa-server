@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 exports.jwt = async (req, res) => {
     try {
         const user = req.body;
-        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '48h' });
         // res.cookie('token', token, {
         //     httpOnly: true,
         //     secure: true,
@@ -61,7 +61,7 @@ exports.updateProfile = async (req, res) => {
 
     try {
         // Retrieve the user from the database using the decoded token
-        const user = await User.findOne({ email: decoded.email });
+        const user = await User.findOne({ email: req.decoded.email });
         console.log('User:', user);
 
         // Update the user's profile

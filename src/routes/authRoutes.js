@@ -6,7 +6,7 @@ const verifyToken = require('../middlewares/verifyToken');
 router.post('/jwt', authController.jwt);
 router.get('/profile', verifyToken, authController.getProfile);
 router.post("/profile", verifyToken, authController.createProfile);
-router.put('/profile', authController.updateProfile);
+router.put('/profile', verifyToken, authController.updateProfile);
 // router.post('/signup', authController.signupUser);
 // router.post('/login', authController.loginUser);
 // router.post('/forgot-password', authController.forgotPassword);
