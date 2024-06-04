@@ -3,7 +3,6 @@ const User = require('../models/User');
 exports.getAllUsers = async (req, res) => {
     try {
         const searchQuery = req.query.search;
-        const token = req.cookies.token;
         const regex = new RegExp(searchQuery, 'i');
 
         let query = {
