@@ -40,20 +40,33 @@ exports.getProfile = async (req, res) => {
 
 exports.createProfile = async (req, res) => {
     try {
+        const userEmail = req.decoded.email;
         // Retrieve the user from the database using the decoded token
-        const user = await User.findOne({ email: req.decoded.email });
+        const user = await User.findOne({ email: userEmail });
         console.log('User:', user);
         if (user) {
-            return res.status(400).json({ message: 'Profile already exists' });
+            return res
+                .status(400)
+                .json({ success: false, message: 'Profile already exists' });
         }
         // Create the user's profile
-        const newUser = new User({ ...decoded, profile: req.body });
+        const newUser = new User({ email: userEmail, profile: req.body });
         await newUser.save();
 
-        res.status(201).json({ status: true, message: 'Profile created successfully' });
+        res
+            .status(201)
+            .json({
+                success: true,
+                message: 'Profile created successfully'
+            });
     } catch (error) {
         console.error('Error creating user profile:', error.message);
-        res.status(500).json({ message: 'Error creating user profile' });
+        res
+            .status(500)
+            .json({
+                success: false,
+                message: error.message
+            });
     }
 }
 

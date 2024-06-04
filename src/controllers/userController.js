@@ -1,6 +1,4 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const roles = require('../utils/data');
 
 exports.getAllUsers = async (req, res) => {
     try {
@@ -35,28 +33,10 @@ exports.getAllUsers = async (req, res) => {
                 'profile.education.session': 1
             }
         };
-
-        if (token) {
-            try {
-                // Verify and decode the token
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                console.log('Decoded token:', decoded);
-
-                // Retrieve the user from the database using the decoded token
-                const user = await User.findOne({ email: decoded.email });
-                console.log('User:', user);
-
-                if (roles.includes(user.profile.basic.role)) {
-                    select = {};
-                }
-            } catch (error) {
-                console.error('Error decoding or retrieving user:', error.message);
-                return res.status(401).json({ message: 'Invalid token' });
-            }
-        }
-
         const users = await User.find(query, select, options);
-        res.status(200).json({ status: true, users });
+        res
+            .status(200)
+            .json({ success: true, users, message: 'Users retrieved successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
